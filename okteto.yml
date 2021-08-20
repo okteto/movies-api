@@ -1,0 +1,7 @@
+name: api
+command: bash
+sync:
+  - .:/src
+forward:
+  - 8080:8080
+  - 9229:9229
