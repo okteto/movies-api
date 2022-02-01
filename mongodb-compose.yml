@@ -1,7 +1,7 @@
 name: movies
 services:
   init:
-    image: okteto.dev/api:${OKTETO_GIT_COMMIT}
+    build: .
     command: yarn load
     environment:
       - MONGODB_USERNAME=okteto

@@ -20,7 +20,7 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
         - name: api
-          image: {{ .Values.image }}:{{ .Values.tag }}
+          image: {{ .Values.image }}@{{ .Values.tag }}
           env:
             - name: MONGODB_PASSWORD
               value: mongodb123

@@ -1,7 +1,11 @@
-name: api
-command: bash
-sync:
-  - .:/src
-forward:
-  - 9229:9229
-  - 27017:mongodb:27017
+build:
+  api:
+    context: .
+
+deploy:
+  - okteto stack deploy -f mongodb-compose.yml --wait
+  - helm upgrade --install movies-api chart --set image=${build.api.registry}/${build.api.repository} --set tag=${build.api.tag}
+
+dependencies:
+  movies-frontend:
+    repository: git@github.com:okteto/movies-frontend.git
