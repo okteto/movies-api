@@ -1,10 +1,10 @@
 build:
   api:
+    image: okteto.dev/api
     context: .
 
 dependencies:
-  movies-frontend:
-    repository: git@github.com:okteto/movies-frontend.git
+  - https://github.com/okteto/movies-frontend
 
 deploy:
   - name: Install Bitnami Charts
@@ -19,3 +19,6 @@ dev:
     command: bash
     sync:
       - .:/src
+    forward:
+    - 9229:9229
+    - 27017:mongodb:27017
