@@ -2,10 +2,20 @@ build:
   api:
     context: .
 
-deploy:
-  - okteto stack deploy -f mongodb-compose.yml --wait
-  - helm upgrade --install movies-api chart --set image=${build.api.registry}/${build.api.repository} --set tag=${build.api.tag}
-
 dependencies:
   movies-frontend:
     repository: git@github.com:okteto/movies-frontend.git
+
+deploy:
+  - name: Install Bitnami Charts
+    command: helm repo add bitnami https://charts.bitnami.com/bitnami
+  - name: Deploy MongoDB
+    command:  helm upgrade --install mongodb bitnami/mongodb -f mongodb/values.yml --version 7.2.11
+  - name: Deploy API
+    command: helm upgrade --install movies-api chart --set image=${OKTETO_BUILD_API_IMAGE}
+
+dev:
+  api:
+    command: bash
+    sync:
+      - .:/src
