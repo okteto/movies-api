@@ -18,13 +18,28 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       terminationGracePeriodSeconds: 0
+      initContainers:
+      - name: load-data
+        image: {{ .Values.image }}
+        command:
+          - yarn
+          - load
+        env:
+          - name: MONGODB_USERNAME
+            value: okteto
+          - name: MONGODB_PASSWORD
+            value: okteto
+          - name: MONGODB_DATABASE
+            value: okteto
+          - name: MONGODB_HOST
+            value: mongodb
       containers:
         - name: api
-          image: {{ .Values.image }}:{{ .Values.tag }}
+          image: {{ .Values.image }}
           env:
-            - name: MONGODB_PASSWORD
-              value: mongodb123
             - name: MONGODB_USERNAME
+              value: okteto
+            - name: MONGODB_PASSWORD
               value: okteto
             - name: MONGODB_DATABASE
               value: okteto

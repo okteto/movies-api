@@ -1,4 +1,2 @@
-
 replicaCount: 1
-image: okteto.dev/api
-tag: dev
+image: ""

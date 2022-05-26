@@ -1,7 +1,24 @@
-name: api
-command: bash
-sync:
-  - .:/src
-forward:
-  - 9229:9229
-  - 27017:mongodb:27017
+build:
+  api:
+    image: okteto.dev/api
+    context: .
+
+dependencies:
+  - https://github.com/okteto/movies-frontend
+
+deploy:
+  - name: Install Bitnami Charts
+    command: helm repo add bitnami https://charts.bitnami.com/bitnami
+  - name: Deploy MongoDB
+    command:  helm upgrade --install mongodb bitnami/mongodb -f mongodb/values.yml --version 7.2.11
+  - name: Deploy API
+    command: helm upgrade --install movies-api chart --set image=${OKTETO_BUILD_API_IMAGE}
+
+dev:
+  api:
+    command: bash
+    sync:
+      - .:/src
+    forward:
+    - 9229:9229
+    - 27017:mongodb:27017

@@ -1,6 +1,0 @@
-icon: https://apps.okteto.com/movies/icon.png
-deploy:
-  - okteto pipeline deploy -r https://github.com/okteto/movies-frontend --name movies-frontend
-  - okteto build -t okteto.dev/api:${OKTETO_GIT_COMMIT} .
-  - okteto stack deploy -f mongodb-compose.yml --wait
-  - helm upgrade --install movies-api chart --set tag=${OKTETO_GIT_COMMIT}
