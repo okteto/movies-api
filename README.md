@@ -14,7 +14,7 @@ Deploy the app on Okteto Cloud by clicking the following button:
 
 [![Develop on Okteto](https://okteto.com/develop-okteto.svg)](https://cloud.okteto.com/deploy?repository=https://github.com/okteto/movies-api)
 
-Alternatively, you can clone this repo and run `okteto pipeline deploy`.
+Alternatively, you can clone this repo and run `okteto deploy`.
 
 ## Develop
 
