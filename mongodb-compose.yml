@@ -1,0 +1,19 @@
+services:
+  mongodb:
+    image: docker.io/bitnami/mongodb:4.0.12-debian-9-r43
+    environment:
+      - MONGODB_USERNAME=okteto
+      - MONGODB_PASSWORD=okteto
+      - MONGODB_DATABASE=okteto
+      - MONGODB_ROOT_PASSWORD=okteto
+      - MONGODB_SYSTEM_LOG_VERBOSITY=0
+      - MONGODB_DISABLE_SYSTEM_LOG=no
+      - MONGODB_ENABLE_IPV6=no
+      - MONGODB_ENABLE_DIRECTORY_PER_DB=no
+    ports:
+      - 27017
+    volumes:
+      - data:/bitnami/mongodb
+
+volumes:
+  data:

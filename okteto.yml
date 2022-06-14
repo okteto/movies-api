@@ -1,18 +1,18 @@
-build:
-  api:
-    image: okteto.dev/api
-    context: .
-
 dependencies:
   - https://github.com/okteto/movies-frontend
 
+build:
+  api: .
+
 deploy:
-  - name: Install Bitnami Charts
-    command: helm repo add bitnami https://charts.bitnami.com/bitnami
   - name: Deploy MongoDB
-    command:  helm upgrade --install mongodb bitnami/mongodb -f mongodb/values.yml --version 12.1.15
+    command: okteto deploy -f mongodb-compose.yml
+  - name: Configure Helm with Okteto Registry
+    command: echo "${OKTETO_TOKEN}" | helm registry login registry.demo.okteto.dev -u ${OKTETO_USERNAME} --password-stdin
+  - name: Pull Helm Chart from Okteto Registry
+    command: helm pull oci://registry.demo.okteto.dev/okteto/movies-api --version 0.1.0
   - name: Deploy API
-    command: helm upgrade --install movies-api chart --set image=${OKTETO_BUILD_API_IMAGE}
+    command: helm upgrade --install movies-api oci://registry.demo.okteto.dev/okteto/movies-api --version 0.1.0 --set image=${OKTETO_BUILD_API_IMAGE}
 
 dev:
   api:
@@ -20,5 +20,4 @@ dev:
     sync:
       - .:/src
     forward:
-    - 9229:9229
-    - 27017:mongodb:27017
+      - 9229:9229

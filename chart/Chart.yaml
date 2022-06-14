@@ -1,7 +1,0 @@
-apiVersion: v2
-name: movies-api
-description: Backend of the Movies app
-type: application
-version: 0.1.0
-appVersion: 1.0.0
-icon: https://apps.okteto.com/movies/icon.png
