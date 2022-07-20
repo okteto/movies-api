@@ -4,7 +4,9 @@ build:
     context: .
 
 dependencies:
-  - https://github.com/okteto/movies-frontend
+  movies-frontend:
+    repository: https://github.com/okteto/movies-frontend
+    wait: true
 
 deploy:
   - name: Install Bitnami Charts
