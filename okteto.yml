@@ -1,16 +1,12 @@
 build:
   api:
-    image: okteto.dev/api
     context: .
+    dockerfile: Dockerfile
 
 dependencies:
-  - https://github.com/okteto/movies-frontend
+  - https://github.com/okteto/movies-multi-repo
 
 deploy:
-  - name: Install Bitnami Charts
-    command: helm repo add bitnami https://charts.bitnami.com/bitnami
-  - name: Deploy MongoDB
-    command:  helm upgrade --install mongodb bitnami/mongodb -f mongodb/values.yml --version 12.1.15
   - name: Deploy API
     command: helm upgrade --install movies-api chart --set image=${OKTETO_BUILD_API_IMAGE}
 

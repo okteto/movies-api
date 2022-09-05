@@ -1,8 +1,0 @@
-persistence:
-  size: 1Gi
-
-auth:
-  enabled: true
-  database: okteto
-  password: okteto
-  username: okteto
