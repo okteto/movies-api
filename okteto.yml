@@ -4,7 +4,9 @@ build:
     dockerfile: Dockerfile
 
 dependencies:
-  - https://github.com/okteto/movies-multi-repo
+  movies-multi-repo:
+     repository: https://github.com/okteto/movies-multi-repo
+     branch: e2e-tests-gateway
 
 deploy:
   - name: Deploy API
