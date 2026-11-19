@@ -1,0 +1,6 @@
+# Files that the Okteto CLI sends to Remote Execution.
+
+# "okteto deploy" only needs the Helm chart
+[deploy]
+*
+!chart

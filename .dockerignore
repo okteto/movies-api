@@ -1,0 +1,7 @@
+# Files that the Docker build needs: the dependencies, the code, and the sample data
+*
+!package.json
+!package-lock.json
+!server.js
+!load.js
+!data

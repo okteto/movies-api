@@ -1,2 +1,5 @@
 replicaCount: 1
 image: ""
+mongodb:
+  # connection string of the MongoDB database, set with --set mongodb.url=...
+  url: ""
