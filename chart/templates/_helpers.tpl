@@ -42,3 +42,19 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Connection string of the MongoDB database: mongodb.url when it's set (the
+movies-multi-repo deploy passes it), otherwise the one of the previous release,
+so `okteto deploy` from this repository keeps working after the first install.
+*/}}
+{{- define "movies.mongodbUrl" -}}
+{{- $url := .Values.mongodb.url -}}
+{{- if not $url -}}
+{{- $secret := lookup "v1" "Secret" .Release.Namespace "api" -}}
+{{- if $secret -}}
+{{- $url = index $secret.data "mongodb-url" | b64dec -}}
+{{- end -}}
+{{- end -}}
+{{- $url -}}
+{{- end -}}
