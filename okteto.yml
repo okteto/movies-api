@@ -1,20 +1,25 @@
 build:
+  api-dev:
+    context: .
+    target: dev
   api:
     context: .
-    dockerfile: Dockerfile
-
-dependencies:
-  - https://github.com/okteto/movies-multi-repo
+    target: prod
+    depends_on:
+      - api-dev
 
 deploy:
   - name: Deploy API
-    command: helm upgrade --install movies-api chart --set image=${OKTETO_BUILD_API_IMAGE}
+    command: helm upgrade --install movies-api chart --set image=${OKTETO_BUILD_API_IMAGE} --set mongodb.url=${MONGODB_URL}
 
 dev:
   api:
-    command: bash
+    image: ${OKTETO_BUILD_API_DEV_IMAGE}
+    command: node --watch --inspect=0.0.0.0:9229 server.js
     sync:
       - .:/src
     forward:
-    - 9229:9229
-    - 27017:mongodb:27017
+      - 9229:9229
+      - 27017:mongodb:27017
+    persistentVolume:
+      enabled: false

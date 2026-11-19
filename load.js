@@ -1,56 +1,49 @@
-const mongo = require("mongodb").MongoClient;
+const { MongoClient } = require("mongodb");
 
-const url = `mongodb://${process.env.MONGODB_USERNAME}:${encodeURIComponent(process.env.MONGODB_PASSWORD)}@${process.env.MONGODB_HOST}:27017/${process.env.MONGODB_DATABASE}`;
-
-var insert = function(collection, data, resolve, reject) {
+async function insert(collection, data) {
   const d = require(data);
   d.results.forEach((doc) => {
     doc._id = doc.id;
   });
-  collection.insertMany(d.results, (err, r) => {
-    if (err) {
-      if (err.code != 11000) {
-        return reject(err);
-      }
+  try {
+    await collection.insertMany(d.results, { ordered: false });
+  } catch (err) {
+    // 11000: the documents were already loaded
+    if (err.code != 11000) {
+      throw err;
     }
-
-    resolve();
-  });
+  }
 }
 
-function loadWithRetry() {
-  mongo.connect(url, { 
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-    connectTimeoutMS: 300,
-    socketTimeoutMS: 300,
-  }, (err, client) => {
-    if (err) {
-      console.error(`Error connecting, retrying in 300 msec: ${err}`);
-      setTimeout(loadWithRetry, 300);
-      return;
-    }
-
-    var promises = [];
-    db = client.db(process.env.MONGODB_DATABASE);
-    promises.push(new Promise((resolve, reject)=>{
-      insert(db.collection('movies'), "./data/movies.json", resolve, reject);
-    }));
-  
-    promises.push(new Promise((resolve, reject)=>{
-      insert(db.collection('watching'), "./data/watching.json", resolve, reject);
-    }));
-  
-    Promise.all(promises)
-    .then(function() { 
-      console.log('all loaded'); 
-      process.exit(0);
-    })
-    .catch((err) => {
-      console.error(`fail to load: ${err}`);
-      process.exit(1);
-    });      
+async function connectWithRetry() {
+  const client = new MongoClient(process.env.MONGODB_URL, {
+    serverSelectionTimeoutMS: 300,
   });
-};
+  for (;;) {
+    try {
+      await client.connect();
+      return client;
+    } catch (err) {
+      console.error(`Error connecting, retrying in 300 msec: ${err}`);
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    }
+  }
+}
 
-loadWithRetry();
+async function load() {
+  const client = await connectWithRetry();
+  const db = client.db();
+  try {
+    await Promise.all([
+      insert(db.collection("movies"), "./data/movies.json"),
+      insert(db.collection("watching"), "./data/watching.json"),
+    ]);
+    console.log("all loaded");
+    process.exit(0);
+  } catch (err) {
+    console.error(`fail to load: ${err}`);
+    process.exit(1);
+  }
+}
+
+load();

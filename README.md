@@ -5,8 +5,12 @@ This example shows how to leverage [Okteto](https://github.com/okteto/okteto) to
 The [Movies App](https://github.com/okteto/movies-multi-repo) is composed by the following components:
 
 - A very simple Node.js API using [Express](https://expressjs.com). Deployed using a [Helm Chart](https://github.com/okteto/movies-api/tree/master/chart).
-- A [MongoDB](https://www.mongodb.com) database.  Deployed using a public [Helm Chart](https://docs.bitnami.com/kubernetes/infrastructure/mongodb/get-started/install/)
-- A frontend in React, defined in a different [Github Repository]((https://github.com/okteto/movies-frontend)).
+- A [MongoDB](https://www.mongodb.com) database, defined in a different [GitHub repository](https://github.com/okteto/mongodb).
+- A frontend in React, defined in a different [GitHub repository](https://github.com/okteto/movies-frontend).
+
+## Deploy
+
+Deploy the Movies App from the [movies-multi-repo](https://github.com/okteto/movies-multi-repo) repository. Its Okteto Manifest deploys this repository as a dependency, with the connection string of the MongoDB database in the `MONGODB_URL` variable.
 
 ## Develop
 
@@ -17,26 +21,13 @@ $ okteto up
 ```
 
 ```
- ✓  Development container activated
  ✓  Files synchronized
     Namespace: cindy
-    Name:      web
+    Name:      api
     Forward:   9229 -> 9229
                27017 -> mongodb:27017
 
-Welcome to your development container. Happy coding!
-cindy:api src>
+Server running on port 8080.
 ```
 
-Run the app by executing the following command:
-
-```command
-cindy:api src> yarn start
-```
-
-Start the app in debug mode by executing the following command:
-
-```command
-cindy:api src> yarn debug
-```
-
+`node --watch` restarts the API when you change a file, and the Node.js debugger listens on port 9229.

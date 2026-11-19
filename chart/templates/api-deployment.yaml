@@ -16,35 +16,31 @@ spec:
       labels:
         app.kubernetes.io/name: api
         app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        checksum/mongodb-url: {{ include "movies.mongodbUrl" . | sha256sum }}
     spec:
       terminationGracePeriodSeconds: 0
       initContainers:
       - name: load-data
         image: {{ .Values.image }}
         command:
-          - yarn
-          - load
+          - node
+          - load.js
         env:
-          - name: MONGODB_USERNAME
-            value: okteto
-          - name: MONGODB_PASSWORD
-            value: okteto
-          - name: MONGODB_DATABASE
-            value: okteto
-          - name: MONGODB_HOST
-            value: mongodb
+          - name: MONGODB_URL
+            valueFrom:
+              secretKeyRef:
+                name: api
+                key: mongodb-url
       containers:
         - name: api
           image: {{ .Values.image }}
           env:
-            - name: MONGODB_USERNAME
-              value: okteto
-            - name: MONGODB_PASSWORD
-              value: okteto
-            - name: MONGODB_DATABASE
-              value: okteto
-            - name: MONGODB_HOST
-              value: mongodb
+            - name: MONGODB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: api
+                  key: mongodb-url
           ports:
             - name: http
               containerPort: 8080

@@ -1,2 +1,6 @@
 replicaCount: 1
 image: ""
+mongodb:
+  # connection string of the MongoDB database, set with --set mongodb.url=...
+  # Left empty, the chart keeps the one of the previous release.
+  url: ""
